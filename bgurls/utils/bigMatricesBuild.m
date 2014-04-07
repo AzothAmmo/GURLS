@@ -25,11 +25,11 @@ y = bigarray.Obj(files.ytrain_filename);
 admMatMultPrepare(X,X,files.XtX_filename);
 admMatMultPrepare(X,y,files.Xty_filename); 
 
-Xva = bigarray.Obj(files.Xva_filename);
-yva = bigarray.Obj(files.yva_filename);
+% mtXva = bigarray.Obj(files.Xva_filename);
+% yva = bigarray.Obj(files.yva_filename);
 
-admMatMultPrepare(Xva,Xva,files.XvatXva_filename);
-admMatMultPrepare(Xva,yva,files.Xvatyva_filename);
+% admMatMultPrepare(Xva,Xva,files.XvatXva_filename);
+% admMatMultPrepare(Xva,yva,files.Xvatyva_filename);
 
 %% Actually run distributed matrix-matrix multiplications with gdm (run this on multiple machines after you see the message!!).
 % builds matrices XtX, Xty, XvatXva, Xvatyva
