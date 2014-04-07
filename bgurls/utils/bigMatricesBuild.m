@@ -1,4 +1,4 @@
-function [] = bigMatricesBuild(files)
+function [] = bigMatricesBuild(files, opt)
 % Pre-computes and stores matrices XtX, Xty, XvatXva, Xvatyva
 % INPUTS:
 % -files = structure containing the fields:
@@ -14,6 +14,8 @@ function [] = bigMatricesBuild(files)
 %     -Xty_filename = name of file where matric X'*y will be stored
 %     -XvatXva_filename = name of file where matric Xva'*Xva will be stored
 %     -Xvatyva_filename = name of file where matric Xva'*yva will be stored
+% -opt = bGurls options struct containing the polynomial mapping legend
+%     -RegressStruct = struct built in PolyRegressBuildLegend
 
 %% Set up distributed matrix-matrix multiplications (XtX, Xty, XvatXva,Xvatyva) with gdm
 
@@ -33,7 +35,7 @@ admMatMultPrepare(Xva,yva,files.Xvatyva_filename);
 % builds matrices XtX, Xty, XvatXva, Xvatyva
 
 fprintf('Run this\n\tbigMatricesBuild(''<FILES>'')\non as many machines as you please\n');
-admMatMultRun(files.XtX_filename);
-admMatMultRun(files.Xty_filename); 
-admMatMultRun(files.XvatXva_filename);
-admMatMultRun(files.Xvatyva_filename);
+admMatMultRun(files.XtX_filename, opt, 1);
+admMatMultRun(files.Xty_filename, opt, 0); 
+% admMatMultRun(files.XvatXva_filename);
+% admMatMultRun(files.Xvatyva_filename);

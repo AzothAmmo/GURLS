@@ -56,25 +56,39 @@ Yvec = importdata(filenameY);
 n = length(Yvec);
 Yvec = reshape(Yvec,n,1); %make sure it is a nx1 vector
 
-T = max(Yvec); %number of classes
+T = numel(Yvec); %number of classes
 test_indices = zeros(n,1);
 train_indices = zeros(n,1);
 val_indices = zeros(n,1);
-for t = 1:T;
-    class_indices = find(Yvec==t); 
-    class_size = length(class_indices);
-    perm = randperm(class_size);
-    train_end = round(class_size*(1-test_hoproportion));
-    train_indices_tmp = class_indices(perm(1:train_end));
-    train_indices(train_indices_tmp) = 1;
-    
-    test_indices(class_indices(perm((train_end+1):end))) = 1;
-    
-    perm = randperm(train_end);
-    val_end = round(train_end*val_hoproportion);
-    val_indices(train_indices_tmp(perm(1:val_end))) = 1;
-    
-end
+
+% modified for regression
+indices = 1:T;
+perm = randperm(T);
+train_end = round(T*(1-test_hoproportion));
+train_indices_tmp = indices(perm(1:train_end));
+train_indices(train_indices_tmp) = 1;
+
+test_indices(indices(perm((train_end+1):end))) = 1;
+
+perm = randperm(train_end);
+val_end = round(train_end*val_hoproportion);
+val_indices(train_indices_tmp(perm(1:val_end))) = 1;
+
+% for t = 1:T;
+%     class_indices = find(Yvec==t); 
+%     class_size = length(class_indices);
+%     perm = randperm(class_size);
+%     train_end = round(class_size*(1-test_hoproportion));
+%     train_indices_tmp = class_indices(perm(1:train_end));
+%     train_indices(train_indices_tmp) = 1;
+%     
+%     test_indices(class_indices(perm((train_end+1):end))) = 1;
+%     
+%     perm = randperm(train_end);
+%     val_end = round(train_end*val_hoproportion);
+%     val_indices(train_indices_tmp(perm(1:val_end))) = 1;
+%     
+% end
 test_indices = logical(test_indices);
 train_indices = logical(train_indices);
 val_indices = logical(val_indices);
@@ -85,7 +99,7 @@ d = length(x);
 
 i_start = 1;
 i_end = blocksize;
-codes = 2*eye(T) - 1;
+% codes = 2*eye(T) - 1;
 while i_start<=n;
     % read blocksize rows of filenameX
     range = [i_start-1,0,i_end-1,d-1];
@@ -93,18 +107,24 @@ while i_start<=n;
     
     block_indices = i_start:i_end;
 
-    y = codes(Yvec(block_indices),:)';
+%     y = codes(Yvec(block_indices),:)';
+    y = Yvec(block_indices)';
+
     
     Xtr.Append(x(:,train_indices(block_indices)));
-    ytr.Append(y(:,train_indices(block_indices)));
+%     ytr.Append(y(:,train_indices(block_indices)));
+    ytr.Append(y(train_indices(block_indices)));
+
 
     % take 20% of points for each class and throw them in the test set.
     Xte.Append(x(:,test_indices(block_indices)));
-    yte.Append(y(:,test_indices(block_indices)));
+%     yte.Append(y(:,test_indices(block_indices)));
+    yte.Append(y(test_indices(block_indices)));
 
     % take 20% of points for each class and throw them in the validation set.
     Xva.Append(x(:,val_indices(block_indices)));
-    yva.Append(y(:,val_indices(block_indices)));
+%     yva.Append(y(:,val_indices(block_indices)));
+    yva.Append(y(val_indices(block_indices)));
 
     i_start = i_end +1;
     i_end = min(n,i_start + blocksize-1);

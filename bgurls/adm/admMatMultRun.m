@@ -1,4 +1,8 @@
-function [out] = admMatMultRun(jobFileName)
+function [out] = admMatMultRun(jobFileName, opt, both)
+% opt is the bgurls options struct
+% both is a flag that determines whether both the "X" and "Y"
+% bigarrays are transformed using the polynomial mapping in opt.
+% if Y happens to be equal to the training data, both should be set to 1
 		jf = load(jobFileName);
 		X = bigarray.Obj(jf.jobStruct.XPath);
 		Y = bigarray.Obj(jf.jobStruct.YPath);
@@ -24,7 +28,7 @@ function [out] = admMatMultRun(jobFileName)
 						reportWork(jf.jobStruct.stateFileName, fLock, blockID);
 					otherwise
 						fprintf('Taking care of job: %d\r', blockID);
-						d = multBlock(X,Y,double(blockID));
+						d = multBlock(X,Y,double(blockID), opt, both);
 						save([jf.jobStruct.stateFileName '_' num2str(blockID)], 'd','-v7.3');
 						reportWork(jf.jobStruct.stateFileName, fLock, blockID);
 				end
@@ -35,10 +39,15 @@ function [out] = admMatMultRun(jobFileName)
 			delete(jf.jobStruct.stateFileName);
 		end	
 end		
-function d = multBlock(X,Y,blockID)
-		bX = X.ReadBlock(blockID);
-		bY = Y.ReadBlock(blockID);
-
+function d = multBlock(X,Y,blockID, opt, both)
+		bX = X.ReadBlockTransform(blockID, opt.RegressStruct);
+        
+        if both
+            bY = Y.ReadBlockTransform(blockID, opt.RegressStruct);
+        else
+            bY = Y.ReadBlock(blockID);
+        end
+        
 		d = bX*bY';
 end
 

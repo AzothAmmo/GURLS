@@ -22,7 +22,7 @@ function [scores] = bigpred_primal(X,y,opt)
 		scores.Clear();
 		scores.Init(opt.blocksize);
 		for i = 1:X.NumBlocks();
-			M = X.ReadBlock(i);
+			M = X.ReadBlockTransform(i, opt.RegressStruct);
 			scores.Append(opt.rls.W'*M);
 		end	
 		scores.Flush();

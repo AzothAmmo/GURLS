@@ -826,6 +826,24 @@ d = T.Read(ind1 : ind2, varargin{:});
 end
 end
 
+% same as the above but transforms the data w/ polynomial mapping
+methods
+function d = ReadBlockTransform(T, c, RegressStruct, varargin)
+
+if T.State < 2, error('no fields'); end
+
+if ~isscalar(c), error('invalid block number'); end
+if (c < 1) || (c > T.parts), error('invalid block number'); end
+
+ind1 = (c - 1) * T.blockSize2 + 1;
+ind2 = min(c * T.blockSize2, T.n);
+
+d = T.Read(ind1 : ind2, varargin{:});
+d = ApplyLegendBig(d, RegressStruct);
+
+end
+end
+
 %-----------------------------------------------------------------------------------------------------------------------
 
 methods
