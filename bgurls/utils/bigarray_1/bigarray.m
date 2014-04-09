@@ -747,8 +747,9 @@ for i = is
 end
 
 if ~isempty(inds)
+    floored = floor((inds - 1) / T.blockSize2) + 1;
     for c = 1 : T.parts
-        match = (floor((inds - 1) / T.blockSize2) + 1 == c);
+        match = (floored == c);
         pinds = inds(match) - (c - 1) * T.blockSize2;
         if isempty(pinds), continue; end
         off = find(match, 1, 'first') - 1;
