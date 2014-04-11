@@ -27,7 +27,7 @@ function [out] = admMatMultRun(jobFileName, opt, both)
 						finalizeJob(jf.jobStruct.stateFileName, X.NumBlocks, jobFileName);
 						reportWork(jf.jobStruct.stateFileName, fLock, blockID);
 					otherwise
-						fprintf('Taking care of job: %d\r', blockID);
+						fprintf(2, 'Taking care of job: %d\r\n', blockID);
 						d = multBlock(X,Y,double(blockID), opt, both);
 						save([jf.jobStruct.stateFileName '_' num2str(blockID)], 'd','-v7.3');
 						reportWork(jf.jobStruct.stateFileName, fLock, blockID);
