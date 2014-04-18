@@ -41,6 +41,15 @@ int getWork(const char *stateFileName, int fLock)
   std::vector<MetaData> buffer(fsize/sizeof(MetaData));
   fread( buffer.data(), sizeof(MetaData), buffer.size(), fState );
 
+  // Find the first item that hasn't been worked on yet
+  // (linear search)
+  auto found = std::find( buffer.begin(), buffer.end()
+      [](MetaData const & md)
+      {
+        return md.status == 0;
+      } );
+
+  /*
   // Perform binary search over the file to find the first
   // work item that hasn't been done
   auto found = std::lower_bound( buffer.begin(), buffer.end(), 0,
@@ -48,6 +57,7 @@ int getWork(const char *stateFileName, int fLock)
       {
         return md.status != tag;
       } );
+  */
 
   int blockID = found->blockID;
   int state = found->status;

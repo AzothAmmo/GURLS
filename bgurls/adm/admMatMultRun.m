@@ -4,8 +4,8 @@ function [out] = admMatMultRun(jobFileName, opt, both)
 % bigarrays are transformed using the polynomial mapping in opt.
 % if Y happens to be equal to the training data, both should be set to 1
 		jf = load(jobFileName);
-		X = bigarray.Obj(jf.jobStruct.XPath);
-		Y = bigarray.Obj(jf.jobStruct.YPath);
+		X = bigarray.Obj(jf.jobStruct.XPath, 'mat');
+		Y = bigarray.Obj(jf.jobStruct.YPath, 'mat');
 		fLock = admSetup(jf.jobStruct.stateFileName);
 		
 		blockID = NO_WORK;

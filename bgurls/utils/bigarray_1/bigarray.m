@@ -88,9 +88,17 @@ function Construct(T)
 
 T.SetFlags;
 
-[list, T.digs] = T.FindBlocks;
+persistent init;
+persistent digs_global;
+persistent list_size_global;
+if isempty(init)
+    [list, digs_global] = T.FindBlocks;
+    list_size_global = numel(list);    
+    init = 1;
+end
 
-if isempty(list)
+T.digs = digs_global;
+if list_size_global == 0
 
     T.blockSize = [];
     T.fields    = {};
@@ -117,7 +125,7 @@ end
 
 T.SetBlockSize;
 
-T.parts = max(0, numel(list) - 1);
+T.parts = max(0, list_size_global - 1);
 T.c     = 0;
 T.mod   = false;
 T.cnt   = inf;
