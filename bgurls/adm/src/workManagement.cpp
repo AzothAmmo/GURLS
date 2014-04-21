@@ -99,13 +99,18 @@ int getWork(const char *stateFileName, int fLock)
         /*
          * 	Finalize task:
          * 	- the first available job is the last one (finalization)
-         *	- make sure all other jobs have been completed and not jus booked
+         *	- make sure all other jobs have been completed and not just booked
          *	- tell the workd we'll take care of this task
          */
         for( auto const & md : buffer )
         {
           if( md.blockID != -1 && md.status != 2 )
           {
+            // This case happens when all work has been assigned but not finished yet,
+            // so this job should just do nothing (the MATLAB code will sleep)
+            //
+            // eventually, this case should fire and make it through the entire loop
+            // leading to blockID == FINALIZE_JOB
             blockID = NO_WORK;
             break;
           }

@@ -1,11 +1,21 @@
-function [out] = admMatMultRun(jobFileName, opt, both)
+function [out] = admMatMultRun(jobFileName, opt, both, loadDirectory)
 % opt is the bgurls options struct
 % both is a flag that determines whether both the "X" and "Y"
 % bigarrays are transformed using the polynomial mapping in opt.
 % if Y happens to be equal to the training data, both should be set to 1
+%
+% loadDirectory is the directory where blocks will be loaded from, for
+% proper performance it should be on the same computer.  Path must end in
+% a slash.
+
 		jf = load(jobFileName);
-		X = bigarray.Obj(jf.jobStruct.XPath, 'mat');
-		Y = bigarray.Obj(jf.jobStruct.YPath, 'mat');
+        
+        [~, name, ext] = fileparts(jf.jobStruct.XPath);        
+		X = bigarray.Obj(strcat(loadDirectory, name, ext), 'mat');
+                
+        [~, name, ext] = fileparts(jf.jobStruct.YPath);        
+		Y = bigarray.Obj(strcat(loadDirectory, name, ext), 'mat');
+        
 		fLock = admSetup(jf.jobStruct.stateFileName);
 		
 		blockID = NO_WORK;
