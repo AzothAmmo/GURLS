@@ -43,7 +43,7 @@ int getWork(const char *stateFileName, int fLock)
 
   // Find the first item that hasn't been worked on yet
   // (linear search)
-  auto found = std::find( buffer.begin(), buffer.end()
+  auto found = std::find_if( buffer.begin(), buffer.end(),
       [](MetaData const & md)
       {
         return md.status == 0;
