@@ -59,8 +59,8 @@ int getWork(const char *stateFileName, int fLock)
       } );
   */
 
-  int blockID = found->blockID;
-  int state = found->status;
+  int blockID = found != buffer.end() ? found->blockID : buffer.back().blockID;
+  int state = found != buffer.end() ? found->status : buffer.back().status;
 
   // Updates the tag for a blockID to some value
   auto updateTag = [&]( int32_t blockID, int32_t newTag )
@@ -148,9 +148,19 @@ int reportWork(const char *stateFileName, int fLock, int finishedBlockID)
     return REPORT_FAIL;
   }
 
+  // get size of file
+  long fsize;
+
+  fseek(fState, 0L, SEEK_END);
+  fsize = ftell(fState);
+  fseek(fState, 0L, SEEK_SET);
+
+  const long numItems = fsize/sizeof(MetaData);
+
   auto updateTag = [&]( int32_t blockID, int32_t newTag )
   {
-    const long pos = (blockID - 1) * sizeof(MetaData) + sizeof(int32_t);
+    const long index = (blockID == FINALIZE_JOB) ? numItems - 1 : blockID - 1;
+    const long pos = index * sizeof(MetaData) + sizeof(int32_t);
 
     fseek( fState, pos, SEEK_SET );
     fwrite( &newTag, sizeof(int32_t), 1, fState );

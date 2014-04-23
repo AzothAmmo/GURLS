@@ -88,14 +88,14 @@ function Construct(T)
 
 T.SetFlags;
 
-persistent init;
-persistent digs_global;
-persistent list_size_global;
-if isempty(init)
+% persistent init;
+% persistent digs_global;
+% persistent list_size_global;
+% if isempty(init)
     [list, digs_global] = T.FindBlocks;
     list_size_global = numel(list);    
-    init = 1;
-end
+%     init = 1;
+% end
 
 T.digs = digs_global;
 if list_size_global == 0
