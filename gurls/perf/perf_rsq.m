@@ -1,7 +1,7 @@
-function [p] = perf_rmse(X, y, opt)
+function [p] = perf_rsq(X, y, opt)
 
-% perf_rmse(X, y, opy)		
-% Computes the root mean squared error for the predictions.
+% perf_rsq(X, y, opy)		
+% Computes the R squared error for the predictions.
 %
 % INPUTS:
 % -X: input data matrix
@@ -25,7 +25,9 @@ if isfield (opt,'perf')
 end
 T 		= size(y,2);
 n 		= size(y,1);
-diff 		= opt.pred - y;
-p.rmse		= sqrt(mean(diff.^2));
-p.forho 	= -p.rmse;
-p.forplot 	= p.rmse;
+ybar = mean(y);
+SStot = sum((y - ybar) .^ 2);
+SSres = sum((y - opt.pred) .^ 2);
+p.rsq		= 1 - (SSres ./ SStot);
+p.forho 	= -p.rsq;
+p.forplot 	= p.rsq;
